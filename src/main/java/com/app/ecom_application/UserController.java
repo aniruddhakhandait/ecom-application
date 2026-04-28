@@ -12,12 +12,16 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+
+// This is base url
+@RequestMapping("/api/users")
 public class UserController {
-
-
     private final  UserService userService;
 
-    @GetMapping("/api/users")
+    @GetMapping
+
+    // request mapping at method level
+//    @RequestMapping (value = "/api/users", method = RequestMethod.GET)
     public ResponseEntity<List<User>> getAllUsers (){
         // Better controller and customize response
 
@@ -27,7 +31,7 @@ public class UserController {
 
 
      // Dynamically get user
-    @GetMapping("/api/users/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<User> getUser (@PathVariable Long id){
         return userService.fetchUser(id).map(ResponseEntity::ok)
                 .orElseGet(()->ResponseEntity.notFound().build());
@@ -35,13 +39,13 @@ public class UserController {
 
 
 
-    @PostMapping("/api/users")
+    @PostMapping
     public ResponseEntity< String >createUser (@RequestBody User user){
         userService.addUsers(user);
         return ResponseEntity.ok("User added successfully");
     }
 
-    @PutMapping("/api/users/{id}")
+    @PutMapping("{id}")
     public ResponseEntity< String >updateUser (@PathVariable Long id , @RequestBody User updatedUser){
          boolean updated = userService.updateUser(id, updatedUser);
            if (updated)
