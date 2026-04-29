@@ -1,12 +1,14 @@
-package com.app.ecom_application;
+package com.app.ecom_application.controller;
 
+import com.app.ecom_application.dto.UserRequest;
+import com.app.ecom_application.dto.UserResponse;
+import com.app.ecom_application.service.UserService;
+import com.app.ecom_application.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -16,13 +18,13 @@ import java.util.List;
 // This is base url
 @RequestMapping("/api/users")
 public class UserController {
-    private final  UserService userService;
+    private final UserService userService;
 
     @GetMapping
 
     // request mapping at method level
 //    @RequestMapping (value = "/api/users", method = RequestMethod.GET)
-    public ResponseEntity<List<User>> getAllUsers (){
+    public ResponseEntity<List<UserResponse>> getAllUsers (){
         // Better controller and customize response
 
       return new ResponseEntity<>(userService.fetchAllUsers(), HttpStatus.OK);
@@ -32,7 +34,7 @@ public class UserController {
 
      // Dynamically get user
     @GetMapping("{id}")
-    public ResponseEntity<User> getUser (@PathVariable Long id){
+    public ResponseEntity<UserResponse> getUser (@PathVariable Long id){
         return userService.fetchUser(id).map(ResponseEntity::ok)
                 .orElseGet(()->ResponseEntity.notFound().build());
     }
@@ -40,14 +42,14 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity< String >createUser (@RequestBody User user){
-        userService.addUsers(user);
+    public ResponseEntity< String >createUser (@RequestBody UserRequest userRequest){
+        userService.addUsers(userRequest);
         return ResponseEntity.ok("User added successfully");
     }
 
     @PutMapping("{id}")
-    public ResponseEntity< String >updateUser (@PathVariable Long id , @RequestBody User updatedUser){
-         boolean updated = userService.updateUser(id, updatedUser);
+    public ResponseEntity< String >updateUser (@PathVariable Long id , @RequestBody UserRequest updateUserRequest){
+         boolean updated = userService.updateUser(id, updateUserRequest);
            if (updated)
         return ResponseEntity.ok("User updated successfully");
            return ResponseEntity.notFound().build();
